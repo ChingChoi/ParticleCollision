@@ -9,7 +9,7 @@ namespace ParticleCollision
 {
     class MCircle
     {
-        private int radius;
+        private int diameter;
         private Point p;
         private Pen pen;
         private SolidBrush brush;
@@ -19,12 +19,12 @@ namespace ParticleCollision
         /// <summary>
         /// Circle constructor
         /// </summary>
-        /// <param name="radius">radius of circle</param>
+        /// <param name="diameter">radius of circle</param>
         /// <param name="x">x position of circle center</param>
         /// <param name="y">y position of circle center</param>
-        public MCircle(int radius, Point p)
+        public MCircle(int diameter, Point p)
         {
-            Radius = radius;
+            Diameter = diameter;
             P = new Point(p.X, p.Y);
             pen = Pens.Cyan;
             brush = new SolidBrush(Color.Cyan);
@@ -35,7 +35,7 @@ namespace ParticleCollision
         /// <summary>
         /// Getters and setters
         /// </summary>
-        public int Radius { get => radius; set => radius = value; }
+        public int Diameter { get => diameter; set => diameter = value; }
         public bool Locked { get => locked; set => locked = value; }
         public Point P { get => p; set => p = value; }
         public Velocity V { get => v; set => v = value; }
@@ -47,8 +47,8 @@ namespace ParticleCollision
         public void DrawCircle(Graphics g)
         {
             g.DrawEllipse(pen, new Rectangle(
-                new Point(P.X - Radius / 2, P.Y - Radius / 2), 
-                new Size(Radius, Radius)));
+                new Point(P.X - Diameter / 2, P.Y - Diameter / 2), 
+                new Size(Diameter, Diameter)));
         }
 
         /// <summary>
@@ -58,8 +58,8 @@ namespace ParticleCollision
         public void DrawFilledCircle(Graphics g)
         {
             g.FillEllipse(brush, new Rectangle(
-                new Point(P.X - Radius / 2, P.Y - Radius / 2), 
-                new Size(Radius, Radius)));
+                new Point(P.X - Diameter / 2, P.Y - Diameter / 2), 
+                new Size(Diameter, Diameter)));
         }
     }
 }

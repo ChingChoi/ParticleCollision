@@ -66,6 +66,30 @@ namespace ParticleCollision
         }
 
         /// <summary>
+        /// Boundary check for collision with a circle detecting range
+        /// </summary>
+        /// <param name="location">location</param>
+        /// <param name="radius">radius</param>
+        /// <param name="width">width of boundary</param>
+        /// <param name="height">height of boundary</param>
+        /// <returns></returns>
+        public static bool BoundaryCollision(Point location, int radius, int width, int height)
+        {
+            if (location.X + radius > width || location.Y + radius > height || 
+                location.X - radius < 0 || location.Y - radius < 0)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public static double FindFractionalTimeOnCollision(Velocity v, Vector a, Point position)
+        {
+            
+            return 0;
+        }
+
+        /// <summary>
         /// Return the new velocity based on current velocity, acceleration, and delta time
         /// </summary>
         /// <param name="v">Velocity</param>

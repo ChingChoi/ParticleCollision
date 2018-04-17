@@ -30,8 +30,8 @@ namespace ParticleCollision
         private const int MIN_FORM_HORZ_OFFSET = 90;
         private const float BUTTON_FONT_SIZE = 8f;
         private const int LEFT_OFFSET = 14;
-        private const int WIDTH = 1920;
-        private const int HEIGHT = 1080;
+        public const int WIDTH = 1920;
+        public const int HEIGHT = 1080;
         /// <summary>
         /// Main GUI variable
         /// </summary>
@@ -455,7 +455,6 @@ namespace ParticleCollision
         /// <param name="e">event</param>
         private void pictureBoxMain_MouseUp(object sender, MouseEventArgs e)
         {
-//            pictureBoxMain.Refresh();
             isDragging = false;
             curCircle.Locked = false;
             curX = -1;
@@ -479,7 +478,12 @@ namespace ParticleCollision
                         if (!c.Locked)
                         {
                             Vector a = new Vector(0, Physics.GRAVITY);
-                            c.P = Physics.DestinationPosition(c.V, a, INTERVAL, c.P);
+                            Point tempDestination = Physics.DestinationPosition(c.V, a, INTERVAL, c.P);
+                            if (!Physics.BoundaryCollision(tempDestination, c.Diameter / 2,
+                                pictureBoxMain.Width, pictureBoxMain.Height))
+                            {
+                                c.P = new Point(tempDestination.X, tempDestination.Y);
+                            }
                             c.V = Physics.CalcVelocity(c.V, a, INTERVAL);
                             c.DrawCircle(g);
                         }
