@@ -48,9 +48,8 @@ namespace ParticleCollision
         /// Variables for drawing
         /// </summary>
         private Graphics G;
-        private Bitmap B;
         private Timer drawingTimer;
-        private const int INTERVAL = 33;
+        public const int INTERVAL = 33;
         private bool isDragging;
         private int curX;
         private int curY;
@@ -60,6 +59,7 @@ namespace ParticleCollision
         /// Object variables
         /// </summary>
         List<MCircle> circles;
+        MCircle curCircle;
 
         /// <summary>
         /// Driver constructor for particle collision
@@ -194,9 +194,7 @@ namespace ParticleCollision
         /// </summary>
         private void InitializeDrawing()
         {
-            B = new Bitmap(WIDTH, HEIGHT);
-            G = Graphics.FromImage(B);
-            this.pictureBoxMain.Image = B;
+            G = pictureBoxMain.CreateGraphics();
             drawingTimer = new Timer();
             drawingTimer.Tick += new EventHandler(drawCricles);
             drawingTimer.Interval = INTERVAL;
@@ -409,7 +407,6 @@ namespace ParticleCollision
         {
             MCircle circle = new MCircle(100, new Point(500, 200));
             circles.Add(circle);
-            pictureBoxMain.Image = B;
         }
 
         /// <summary>
@@ -421,9 +418,10 @@ namespace ParticleCollision
         {
             if (e.Button == MouseButtons.Left)
             {
-                int cX = (int)(WIDTH / ((double)pictureBoxMain.Width / (double)e.X));
-                int cY = (int)(HEIGHT / ((double)pictureBoxMain.Height / (double)e.Y));
-                circles.Add(new MCircle(100, new Point(cX, cY)));
+                int cX = e.X;
+                int cY = e.Y;
+                curCircle = new MCircle(100, new Point(cX, cY));
+                circles.Add(curCircle);
                 curX = cX;
                 curY = cY;
                 curXX = e.X;
@@ -441,12 +439,15 @@ namespace ParticleCollision
         {
             if (isDragging)
             {
-                pictureBoxMain.Refresh();
                 //int cX = (int)(WIDTH / ((double)pictureBoxMain.Width / (double)e.X));
                 //int cY = (int)(HEIGHT / ((double)pictureBoxMain.Height / (double)e.Y));
                 using (Graphics g = pictureBoxMain.CreateGraphics())
                 {
                     g.DrawLine(Pens.Red, new Point(curXX, curYY), new Point(e.X, e.Y));
+                    foreach (MCircle c in circles)
+                    {
+                        c.DrawFilledCircle(g);
+                    }
                 }
             }
         }
@@ -458,7 +459,9 @@ namespace ParticleCollision
         /// <param name="e">event</param>
         private void pictureBoxMain_MouseUp(object sender, MouseEventArgs e)
         {
+//            pictureBoxMain.Refresh();
             isDragging = false;
+            curCircle.Locked = false;
         }
 
         /// <summary>
@@ -470,12 +473,18 @@ namespace ParticleCollision
         {
             if (circles != null)
             {
-                foreach (MCircle c in circles)
+                using (Graphics g = pictureBoxMain.CreateGraphics())
                 {
-                    c.DrawFilledCircle(G);
+                    pictureBoxMain.Refresh();
+                    foreach (MCircle c in circles)
+                    {
+                        Vector a = new Vector(0, Physics.GRAVITY);
+                        c.P = Physics.DestinationPosition(c.V, a, INTERVAL, c.P);
+                        c.V = Physics.CalcVelocity(c.V, a, INTERVAL);
+                        c.DrawFilledCircle(g);
+                    }
                 }
             }
-            pictureBoxMain.Invalidate();
         }
     }
 }

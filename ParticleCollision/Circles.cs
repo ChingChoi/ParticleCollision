@@ -9,12 +9,12 @@ namespace ParticleCollision
 {
     class MCircle
     {
-
         private int radius;
         private Point p;
         private Pen pen;
         private SolidBrush brush;
-        private Velocity velocity;
+        private Velocity v;
+        private bool locked;
 
         /// <summary>
         /// Circle constructor
@@ -24,14 +24,21 @@ namespace ParticleCollision
         /// <param name="y">y position of circle center</param>
         public MCircle(int radius, Point p)
         {
-            this.Radius = radius;
-            this.p = p;
+            Radius = radius;
+            P = new Point(p.X, p.Y);
             pen = Pens.Cyan;
             brush = new SolidBrush(Color.Cyan);
-            velocity = new Velocity(0, 0);
+            v = new Velocity(0, 0);
+            Locked = false;
         }
 
+        /// <summary>
+        /// Getters and setters
+        /// </summary>
         public int Radius { get => radius; set => radius = value; }
+        public bool Locked { get => locked; set => locked = value; }
+        public Point P { get => p; set => p = value; }
+        public Velocity V { get => v; set => v = value; }
 
         /// <summary>
         /// Draw a circle
@@ -40,7 +47,7 @@ namespace ParticleCollision
         public void DrawCircle(Graphics g)
         {
             g.DrawEllipse(pen, new Rectangle(
-                new Point(p.X - Radius / 2, p.Y - Radius / 2), 
+                new Point(P.X - Radius / 2, P.Y - Radius / 2), 
                 new Size(Radius, Radius)));
         }
 
@@ -51,7 +58,7 @@ namespace ParticleCollision
         public void DrawFilledCircle(Graphics g)
         {
             g.FillEllipse(brush, new Rectangle(
-                new Point(p.X - Radius / 2, p.Y - Radius / 2), 
+                new Point(P.X - Radius / 2, P.Y - Radius / 2), 
                 new Size(Radius, Radius)));
         }
     }

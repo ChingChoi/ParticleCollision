@@ -55,6 +55,7 @@
     <Compile Include="Physics.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Vector.cs" />
     <EmbeddedResource Include="ParticleCollision.resx">
       <DependentUpon>ParticleCollision.cs</DependentUpon>
     </EmbeddedResource>
