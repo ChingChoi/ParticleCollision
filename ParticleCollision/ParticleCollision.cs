@@ -478,10 +478,13 @@ namespace ParticleCollision
                     pictureBoxMain.Refresh();
                     foreach (MCircle c in circles)
                     {
-                        Vector a = new Vector(0, Physics.GRAVITY);
-                        c.P = Physics.DestinationPosition(c.V, a, INTERVAL, c.P);
-                        c.V = Physics.CalcVelocity(c.V, a, INTERVAL);
-                        c.DrawFilledCircle(g);
+                        if (!c.Locked)
+                        {
+                            Vector a = new Vector(0, Physics.GRAVITY);
+                            c.P = Physics.DestinationPosition(c.V, a, INTERVAL, c.P);
+                            c.V = Physics.CalcVelocity(c.V, a, INTERVAL);
+                            c.DrawCircle(g);
+                        }
                     }
                 }
             }

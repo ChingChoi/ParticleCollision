@@ -29,7 +29,7 @@ namespace ParticleCollision
             pen = Pens.Cyan;
             brush = new SolidBrush(Color.Cyan);
             v = new Velocity(0, 0);
-            Locked = false;
+            Locked = true;
         }
 
         /// <summary>
