@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Collections;
 
 namespace ParticleCollision
 {
@@ -48,18 +49,29 @@ namespace ParticleCollision
         /// </summary>
         private Graphics G;
         private Bitmap B;
+        private Timer drawingTimer;
+        private const int INTERVAL = 33;
+        /// <summary>
+        /// Object variables
+        /// </summary>
+        List<MCircle> circles;
 
+        /// <summary>
+        /// Driver constructor for particle collision
+        /// </summary>
         public ParticleCollision()
         {
             this.themeBackgroundColor = Color.FromArgb(175, 0, 0, 0);
             this.themeBackgroundColorTwo = Color.FromArgb(100, 0, 0, 0);
             this.themeColor = Color.FromArgb(200, 144, 238, 144);
+            this.circles = new List<MCircle>();
 
             InitializeComponent();
             InitializeCustom();
-            CustomizeMenuStrip(menuStrip);
             InitializeDrawing();
+            CustomizeMenuStrip(menuStrip);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            panel.Invalidate();
         }
 
         /// <summary>
@@ -77,7 +89,8 @@ namespace ParticleCollision
             pictureBoxMain.Name = "pictureBoxMain";
             pictureBoxMain.TabStop = false;
             pictureBoxMain.BackColor = themeBackgroundColorTwo;
-            pictureBoxMain.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBoxMain.SizeMode = PictureBoxSizeMode.StretchImage;
+            pictureBoxMain.MouseClick += new MouseEventHandler(pictureBoxMain_MouseClick);
             // 
             // panel1
             // 
@@ -175,6 +188,11 @@ namespace ParticleCollision
         {
             B = new Bitmap(WIDTH, HEIGHT);
             G = Graphics.FromImage(B);
+            this.pictureBoxMain.Image = B;
+            drawingTimer = new Timer();
+            drawingTimer.Tick += new EventHandler(drawCricles);
+            drawingTimer.Interval = INTERVAL;
+            drawingTimer.Start();
         }
 
         /// <summary>
@@ -214,6 +232,10 @@ namespace ParticleCollision
             }
         }
 
+        /// <summary>
+        /// Enable dragging of panel
+        /// </summary>
+        /// <param name="m">message</param>
         protected override void WndProc(ref Message m)
         {
             base.WndProc(ref m);
@@ -359,6 +381,7 @@ namespace ParticleCollision
                 get { return Color.Transparent; }
             }
         }
+
         /// <summary>
         /// Custom button that override Button
         /// </summary>
@@ -373,11 +396,50 @@ namespace ParticleCollision
             }
         }
 
+        /// <summary>
+        /// Generate circle on a specific spot
+        /// </summary>
+        /// <param name="sender">sender object</param>
+        /// <param name="e">event</param>
         private void circleToolStripMenuItem_Click(object sender, EventArgs e)
         {
             MCircle circle = new MCircle(100, 500, 200);
-            circle.DrawFilledCircle(G);
+            circles.Add(circle);
             pictureBoxMain.Image = B;
         }
+
+        /// <summary>
+        /// Handles drawing circles on mouse click
+        /// </summary>
+        /// <param name="sender">sender object</param>
+        /// <param name="e">event</param>
+        private void pictureBoxMain_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                int cX = (int)((double)e.X / (double)pictureBoxMain.Width * WIDTH);
+                int cY = (int)((double)e.Y / (double)pictureBoxMain.Height * HEIGHT);
+                circles.Add(new MCircle(100, cX, cY));
+            }
+        }
+
+        /// <summary>
+        /// Draw all circles per interval
+        /// </summary>
+        /// <param name="sender">sender object<param>
+        /// <param name="e">event</param>
+        private void drawCricles(object sender, EventArgs e)
+        {
+            if (circles != null)
+            {
+                foreach (MCircle c in circles)
+                {
+                    c.DrawFilledCircle(G);
+                }
+            }
+            pictureBoxMain.Invalidate();
+        }
+
+        private void 
     }
 }

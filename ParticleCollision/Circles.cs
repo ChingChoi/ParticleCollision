@@ -9,11 +9,26 @@ namespace ParticleCollision
 {
     class MCircle
     {
+        struct Velocity
+        {
+            float x;
+            float y;
+
+            public Velocity(float x, float y)
+            {
+                this.x = x;
+                this.y = y;
+            }
+
+            public float X { get => x; set => x = value; }
+            public float Y { get => y; set => y = value; }
+        }
         private int radius;
         private int x;
         private int y;
         private Pen pen;
         private SolidBrush brush;
+        private Velocity velocity;
 
         /// <summary>
         /// Circle constructor
@@ -26,8 +41,9 @@ namespace ParticleCollision
             this.radius = radius;
             this.x = x;
             this.y = y;
-            this.pen = Pens.Cyan;
-            this.brush = new SolidBrush(Color.Cyan);
+            pen = Pens.Cyan;
+            brush = new SolidBrush(Color.Cyan);
+            velocity = new Velocity(0, 0);
         }
 
         /// <summary>
@@ -36,7 +52,9 @@ namespace ParticleCollision
         /// <param name="g"></param>
         public void DrawCircle(Graphics g)
         {
-            g.DrawEllipse(pen, new Rectangle(new Point(x, y), new Size(radius, radius)));
+            g.DrawEllipse(pen, new Rectangle(
+                new Point(x - radius / 2, y - radius / 2), 
+                new Size(radius, radius)));
         }
 
         /// <summary>
@@ -45,7 +63,9 @@ namespace ParticleCollision
         /// <param name="g"></param>
         public void DrawFilledCircle(Graphics g)
         {
-            g.FillEllipse(brush, new Rectangle(new Point(x, y), new Size(radius, radius)));
+            g.FillEllipse(brush, new Rectangle(
+                new Point(x - radius / 2, y - radius / 2), 
+                new Size(radius, radius)));
         }
     }
 }
