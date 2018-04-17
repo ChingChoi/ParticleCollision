@@ -51,6 +51,9 @@ namespace ParticleCollision
         private Bitmap B;
         private Timer drawingTimer;
         private const int INTERVAL = 33;
+        private bool isDragging;
+        private int curX;
+        private int curY;
         /// <summary>
         /// Object variables
         /// </summary>
@@ -65,6 +68,7 @@ namespace ParticleCollision
             this.themeBackgroundColorTwo = Color.FromArgb(100, 0, 0, 0);
             this.themeColor = Color.FromArgb(200, 144, 238, 144);
             this.circles = new List<MCircle>();
+            DoubleBuffered = true;
 
             InitializeComponent();
             InitializeCustom();
@@ -90,7 +94,9 @@ namespace ParticleCollision
             pictureBoxMain.TabStop = false;
             pictureBoxMain.BackColor = themeBackgroundColorTwo;
             pictureBoxMain.SizeMode = PictureBoxSizeMode.StretchImage;
-            pictureBoxMain.MouseClick += new MouseEventHandler(pictureBoxMain_MouseClick);
+            pictureBoxMain.MouseDown += new MouseEventHandler(pictureBoxMain_MouseDown);
+            pictureBoxMain.MouseMove += new MouseEventHandler(pictureBoxMain_MouseMove);
+            pictureBoxMain.MouseUp += new MouseEventHandler(pictureBoxMain_MouseUp);
             // 
             // panel1
             // 
@@ -300,12 +306,10 @@ namespace ParticleCollision
         private class MyColors : ProfessionalColorTable
         {
             private Color themeBackgroundColor;
-
             public MyColors(Color themeBackgroundColor)
             {
                 this.themeBackgroundColor = themeBackgroundColor;
             }
-
             public override Color MenuItemSelected
             {
                 get { return themeBackgroundColor; }
@@ -314,12 +318,10 @@ namespace ParticleCollision
             {
                 get { return Color.Transparent; }
             }
-
             public override Color ButtonSelectedHighlight
             {
                 get { return Color.Transparent; }
             }
-
             public override Color ButtonCheckedGradientBegin
             {
                 get { return themeBackgroundColor; }
@@ -409,18 +411,50 @@ namespace ParticleCollision
         }
 
         /// <summary>
-        /// Handles drawing circles on mouse click
+        /// Draw circle on mouse click and enable mouse drag
         /// </summary>
         /// <param name="sender">sender object</param>
         /// <param name="e">event</param>
-        private void pictureBoxMain_MouseClick(object sender, MouseEventArgs e)
+        private void pictureBoxMain_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
             {
                 int cX = (int)((double)e.X / (double)pictureBoxMain.Width * WIDTH);
                 int cY = (int)((double)e.Y / (double)pictureBoxMain.Height * HEIGHT);
                 circles.Add(new MCircle(100, cX, cY));
+                curX = cX;
+                curY = cY;
+                isDragging = true;
             }
+        }
+
+        /// <summary>
+        /// Draw line on mouse drag
+        /// </summary>
+        /// <param name="sender">sender object</param>
+        /// <param name="e">event</param>
+        private void pictureBoxMain_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (isDragging)
+            {
+                pictureBoxMain.Refresh();
+                int cX = (int)((double)e.X / (double)pictureBoxMain.Width * WIDTH);
+                int cY = (int)((double)e.Y / (double)pictureBoxMain.Height * HEIGHT);
+                using (Graphics g = pictureBoxMain.CreateGraphics())
+                {
+                    g.DrawLine(Pens.Red, new Point(curX, curY), new Point(cX, cY));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Disable dragging on mouse up
+        /// </summary>
+        /// <param name="sender">sender object</param>
+        /// <param name="e">event</param>
+        private void pictureBoxMain_MouseUp(object sender, MouseEventArgs e)
+        {
+            isDragging = false;
         }
 
         /// <summary>
@@ -439,7 +473,5 @@ namespace ParticleCollision
             }
             pictureBoxMain.Invalidate();
         }
-
-        private void 
     }
 }

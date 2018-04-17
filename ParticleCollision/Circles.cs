@@ -9,20 +9,7 @@ namespace ParticleCollision
 {
     class MCircle
     {
-        struct Velocity
-        {
-            float x;
-            float y;
 
-            public Velocity(float x, float y)
-            {
-                this.x = x;
-                this.y = y;
-            }
-
-            public float X { get => x; set => x = value; }
-            public float Y { get => y; set => y = value; }
-        }
         private int radius;
         private int x;
         private int y;
@@ -33,12 +20,12 @@ namespace ParticleCollision
         /// <summary>
         /// Circle constructor
         /// </summary>
-        /// <param name="radius"></param>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
+        /// <param name="radius">radius of circle</param>
+        /// <param name="x">x position of circle center</param>
+        /// <param name="y">y position of circle center</param>
         public MCircle(int radius, int x, int y)
         {
-            this.radius = radius;
+            this.Radius = radius;
             this.x = x;
             this.y = y;
             pen = Pens.Cyan;
@@ -46,26 +33,28 @@ namespace ParticleCollision
             velocity = new Velocity(0, 0);
         }
 
+        public int Radius { get => radius; set => radius = value; }
+
         /// <summary>
         /// Draw a circle
         /// </summary>
-        /// <param name="g"></param>
+        /// <param name="g">graphics object</param>
         public void DrawCircle(Graphics g)
         {
             g.DrawEllipse(pen, new Rectangle(
-                new Point(x - radius / 2, y - radius / 2), 
-                new Size(radius, radius)));
+                new Point(x - Radius / 2, y - Radius / 2), 
+                new Size(Radius, Radius)));
         }
 
         /// <summary>
         /// Draw a filled circle
         /// </summary>
-        /// <param name="g"></param>
+        /// <param name="g">graphics object</param>
         public void DrawFilledCircle(Graphics g)
         {
             g.FillEllipse(brush, new Rectangle(
-                new Point(x - radius / 2, y - radius / 2), 
-                new Size(radius, radius)));
+                new Point(x - Radius / 2, y - Radius / 2), 
+                new Size(Radius, Radius)));
         }
     }
 }
