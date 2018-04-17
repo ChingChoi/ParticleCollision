@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -45,5 +46,9 @@ namespace ParticleCollision
         /// </summary>
         public const float GRAVITY = 9.8f;
 
+        //public Point CalcDistanceTraveled(Velocity v, float acceleration, Point position)
+        //{
+        //    return null;
+        //}
     }
 }

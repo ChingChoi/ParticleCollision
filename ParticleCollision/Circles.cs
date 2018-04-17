@@ -11,8 +11,7 @@ namespace ParticleCollision
     {
 
         private int radius;
-        private int x;
-        private int y;
+        private Point p;
         private Pen pen;
         private SolidBrush brush;
         private Velocity velocity;
@@ -23,11 +22,10 @@ namespace ParticleCollision
         /// <param name="radius">radius of circle</param>
         /// <param name="x">x position of circle center</param>
         /// <param name="y">y position of circle center</param>
-        public MCircle(int radius, int x, int y)
+        public MCircle(int radius, Point p)
         {
             this.Radius = radius;
-            this.x = x;
-            this.y = y;
+            this.p = p;
             pen = Pens.Cyan;
             brush = new SolidBrush(Color.Cyan);
             velocity = new Velocity(0, 0);
@@ -42,7 +40,7 @@ namespace ParticleCollision
         public void DrawCircle(Graphics g)
         {
             g.DrawEllipse(pen, new Rectangle(
-                new Point(x - Radius / 2, y - Radius / 2), 
+                new Point(p.X - Radius / 2, p.Y - Radius / 2), 
                 new Size(Radius, Radius)));
         }
 
@@ -53,7 +51,7 @@ namespace ParticleCollision
         public void DrawFilledCircle(Graphics g)
         {
             g.FillEllipse(brush, new Rectangle(
-                new Point(x - Radius / 2, y - Radius / 2), 
+                new Point(p.X - Radius / 2, p.Y - Radius / 2), 
                 new Size(Radius, Radius)));
         }
     }

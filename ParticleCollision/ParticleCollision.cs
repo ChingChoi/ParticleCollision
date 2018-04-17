@@ -405,7 +405,7 @@ namespace ParticleCollision
         /// <param name="e">event</param>
         private void circleToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MCircle circle = new MCircle(100, 500, 200);
+            MCircle circle = new MCircle(100, new Point(500, 200));
             circles.Add(circle);
             pictureBoxMain.Image = B;
         }
@@ -421,7 +421,7 @@ namespace ParticleCollision
             {
                 int cX = (int)((double)e.X / (double)pictureBoxMain.Width * WIDTH);
                 int cY = (int)((double)e.Y / (double)pictureBoxMain.Height * HEIGHT);
-                circles.Add(new MCircle(100, cX, cY));
+                circles.Add(new MCircle(100, new Point(cX, cY)));
                 curX = cX;
                 curY = cY;
                 isDragging = true;
