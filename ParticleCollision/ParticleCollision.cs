@@ -54,6 +54,8 @@ namespace ParticleCollision
         private bool isDragging;
         private int curX;
         private int curY;
+        private int curXX;
+        private int curYY;
         /// <summary>
         /// Object variables
         /// </summary>
@@ -419,11 +421,13 @@ namespace ParticleCollision
         {
             if (e.Button == MouseButtons.Left)
             {
-                int cX = (int)((double)e.X / (double)pictureBoxMain.Width * WIDTH);
-                int cY = (int)((double)e.Y / (double)pictureBoxMain.Height * HEIGHT);
+                int cX = (int)(WIDTH / ((double)pictureBoxMain.Width / (double)e.X));
+                int cY = (int)(HEIGHT / ((double)pictureBoxMain.Height / (double)e.Y));
                 circles.Add(new MCircle(100, new Point(cX, cY)));
                 curX = cX;
                 curY = cY;
+                curXX = e.X;
+                curYY = e.Y;
                 isDragging = true;
             }
         }
@@ -438,11 +442,11 @@ namespace ParticleCollision
             if (isDragging)
             {
                 pictureBoxMain.Refresh();
-                int cX = (int)((double)e.X / (double)pictureBoxMain.Width * WIDTH);
-                int cY = (int)((double)e.Y / (double)pictureBoxMain.Height * HEIGHT);
+                //int cX = (int)(WIDTH / ((double)pictureBoxMain.Width / (double)e.X));
+                //int cY = (int)(HEIGHT / ((double)pictureBoxMain.Height / (double)e.Y));
                 using (Graphics g = pictureBoxMain.CreateGraphics())
                 {
-                    g.DrawLine(Pens.Red, new Point(curX, curY), new Point(cX, cY));
+                    g.DrawLine(Pens.Red, new Point(curXX, curYY), new Point(e.X, e.Y));
                 }
             }
         }
