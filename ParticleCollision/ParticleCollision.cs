@@ -439,15 +439,11 @@ namespace ParticleCollision
         {
             if (isDragging)
             {
-                //int cX = (int)(WIDTH / ((double)pictureBoxMain.Width / (double)e.X));
-                //int cY = (int)(HEIGHT / ((double)pictureBoxMain.Height / (double)e.Y));
+                curXX = e.X;
+                curYY = e.Y;
                 using (Graphics g = pictureBoxMain.CreateGraphics())
                 {
-                    g.DrawLine(Pens.Red, new Point(curXX, curYY), new Point(e.X, e.Y));
-                    foreach (MCircle c in circles)
-                    {
-                        c.DrawCircle(g);
-                    }
+                    g.DrawLine(Pens.Red, new Point(curX, curY), new Point(e.X, e.Y));
                 }
             }
         }
@@ -462,6 +458,8 @@ namespace ParticleCollision
 //            pictureBoxMain.Refresh();
             isDragging = false;
             curCircle.Locked = false;
+            curX = -1;
+            curY = -1;
         }
 
         /// <summary>
@@ -488,6 +486,10 @@ namespace ParticleCollision
                         else
                         {
                             c.DrawCircle(g);
+                        }
+                        if (isDragging && curX != -1)
+                        {
+                            g.DrawLine(Pens.Red, new Point(curX, curY), new Point(curXX, curYY));
                         }
                     }
                 }
