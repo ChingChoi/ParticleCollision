@@ -39,8 +39,6 @@ namespace ParticleCollision
         public double Y { get => y; set => y = value; }
     }
 
-
-
     class Physics
     {
         /// <summary>
@@ -57,7 +55,7 @@ namespace ParticleCollision
         /// <param name="a">acceleration</param>
         /// <param name="position">position</param>
         /// <returns>destination point</returns>
-        public static Point DestinationPosition(Velocity v, Vector a, int t, Point position)
+        public static Point DestinationPosition(Velocity v, Vector a, double t, Point position)
         {
             Point destination = new Point();
             destination.X = position.X + (int)DistanceTraveled(v.X, a.X, ParticleCollision.INTERVAL);
@@ -73,22 +71,40 @@ namespace ParticleCollision
         /// <param name="width">width of boundary</param>
         /// <param name="height">height of boundary</param>
         /// <returns></returns>
-        public static bool BoundaryCollision(Point location, int radius, int width, int height)
+        public static Vector BoundaryCollision(Point location, int radius, int width, int height)
         {
+            Vector v = new Vector(0, 0);
             if (location.X + radius > width || location.Y + radius > height || 
                 location.X - radius < 0 || location.Y - radius < 0)
             {
-                return true;
+                int[] min = new int[4];
+                min[0] = -(location.X - radius);
+                min[1] = location.X + radius - width;
+                min[2] = -(location.Y - radius);
+                min[3] = location.Y + radius - height;
+                int minD = int.MaxValue;
+                for (int i = 0; i < min.Length; i++)
+                {
+                    if (minD > min[i] && min[i] >= 0)
+                    {
+                        minD = min[i];
+                        if (i < 2)
+                        {
+                            v.X = minD;
+                            v.Y = 0;
+                        }
+                        else
+                        {
+                            v.X = 0;
+                            v.Y = minD;
+                        }
+                    }
+                }
+                return v;
             }
-            return false;
+            return v;
         }
-
-        public static double FindFractionalTimeOnCollision(Velocity v, Vector a, Point position)
-        {
-            
-            return 0;
-        }
-
+        
         /// <summary>
         /// Return the new velocity based on current velocity, acceleration, and delta time
         /// </summary>
@@ -96,7 +112,7 @@ namespace ParticleCollision
         /// <param name="a">Acceleration</param>
         /// <param name="t">Time elapsed</param>
         /// <returns>New velocity</returns>
-        public static Velocity CalcVelocity(Velocity v, Vector a, int t)
+        public static Velocity CalcVelocity(Velocity v, Vector a, double t)
         {
             Velocity newV = new Velocity();
             newV.X = v.X + a.X * t / 1000;
@@ -114,6 +130,13 @@ namespace ParticleCollision
         public static double DistanceTraveled(double v, double a, int t)
         {
             return v * t / 1000 + 0.5f * a * t / 1000 * t / 1000;
+        }
+
+        public static double TimeElapsed(double v, double a, int d)
+        {
+            double t1 = -v + Math.Sqrt((v * v - (4 * 0.5 * -d)));
+            double t2 = -v - Math.Sqrt((v * v - (4 * 0.5 * -d)));
+            return t1 > t2 ? t1 : t2;
         }
     }
 }

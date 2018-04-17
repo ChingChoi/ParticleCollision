@@ -479,12 +479,33 @@ namespace ParticleCollision
                         {
                             Vector a = new Vector(0, Physics.GRAVITY);
                             Point tempDestination = Physics.DestinationPosition(c.V, a, INTERVAL, c.P);
-                            if (!Physics.BoundaryCollision(tempDestination, c.Diameter / 2,
-                                pictureBoxMain.Width, pictureBoxMain.Height))
+                            Vector collisionVector = Physics.BoundaryCollision(tempDestination, c.Diameter / 2,
+                                pictureBoxMain.Width, pictureBoxMain.Height);
+                            if (collisionVector.X == 0 && collisionVector.Y == 0)
                             {
                                 c.P = new Point(tempDestination.X, tempDestination.Y);
+                                c.V = Physics.CalcVelocity(c.V, a, INTERVAL);
                             }
-                            c.V = Physics.CalcVelocity(c.V, a, INTERVAL);
+                            else
+                            {
+                                double timeElapsed = 0;
+                                if (collisionVector.X != 0)
+                                {
+                                    timeElapsed = Physics.TimeElapsed(c.V.X, a.X, (int)collisionVector.X);
+                                    c.P = Physics.DestinationPosition(c.V, a, timeElapsed, c.P);
+                                    c.V = Physics.CalcVelocity(c.V, a, timeElapsed);
+                                    c.V = new Velocity(-c.V.X, c.V.Y);
+                                    c.P = Physics.DestinationPosition(c.V, a, INTERVAL - timeElapsed, c.P);
+                                }
+                                else
+                                {
+                                    timeElapsed = Physics.TimeElapsed(c.V.Y, a.Y, (int)collisionVector.Y);
+                                    c.P = Physics.DestinationPosition(c.V, a, timeElapsed, c.P);
+                                    c.V = Physics.CalcVelocity(c.V, a, timeElapsed);
+                                    c.V = new Velocity(c.V.X, -c.V.Y);
+                                    c.P = Physics.DestinationPosition(c.V, a, INTERVAL - timeElapsed, c.P);
+                                }
+                            }
                             c.DrawCircle(g);
                         }
                         else
