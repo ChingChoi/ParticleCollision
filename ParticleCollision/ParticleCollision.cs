@@ -55,6 +55,8 @@ namespace ParticleCollision
         private int curY;
         private int curXX;
         private int curYY;
+        private float hForce;
+        private float vForce;
         /// <summary>
         /// Object variables
         /// </summary>
@@ -445,6 +447,9 @@ namespace ParticleCollision
                 {
                     g.DrawLine(Pens.Red, new Point(curX, curY), new Point(e.X, e.Y));
                 }
+                hForce = (curX - curXX) * -1 * 20;
+                vForce = (curY - curYY) * -1 * 20;
+
             }
         }
 
@@ -459,6 +464,9 @@ namespace ParticleCollision
             curCircle.Locked = false;
             curX = -1;
             curY = -1;
+            circles.Last().V = new Velocity(hForce, circles.Last().a.Y + vForce);
+            hForce = 0;
+            vForce = 0;
         }
 
         /// <summary>
@@ -477,14 +485,14 @@ namespace ParticleCollision
                     {
                         if (!c.Locked)
                         {
-                            Vector a = new Vector(0, Physics.GRAVITY);
-                            Point tempDestination = Physics.DestinationPosition(c.V, a, INTERVAL, c.P);
+                            
+                            Point tempDestination = Physics.DestinationPosition(c.V, c.a, INTERVAL, c.P);
                             if (!Physics.BoundaryCollision(tempDestination, c.Diameter / 2,
                                 pictureBoxMain.Width, pictureBoxMain.Height))
                             {
                                 c.P = new Point(tempDestination.X, tempDestination.Y);
                             }
-                            c.V = Physics.CalcVelocity(c.V, a, INTERVAL);
+                            c.V = Physics.CalcVelocity(c.V, c.a, INTERVAL);
                             c.DrawCircle(g);
                         }
                         else
