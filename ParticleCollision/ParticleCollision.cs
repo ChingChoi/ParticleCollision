@@ -446,7 +446,7 @@ namespace ParticleCollision
                     g.DrawLine(Pens.Red, new Point(curXX, curYY), new Point(e.X, e.Y));
                     foreach (MCircle c in circles)
                     {
-                        c.DrawFilledCircle(g);
+                        c.DrawCircle(g);
                     }
                 }
             }
@@ -483,6 +483,10 @@ namespace ParticleCollision
                             Vector a = new Vector(0, Physics.GRAVITY);
                             c.P = Physics.DestinationPosition(c.V, a, INTERVAL, c.P);
                             c.V = Physics.CalcVelocity(c.V, a, INTERVAL);
+                            c.DrawCircle(g);
+                        }
+                        else
+                        {
                             c.DrawCircle(g);
                         }
                     }
