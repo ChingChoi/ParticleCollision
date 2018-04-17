@@ -15,6 +15,7 @@ namespace ParticleCollision
         private SolidBrush brush;
         private Velocity v;
         private bool locked;
+        public Vector a = new Vector(0, Physics.GRAVITY);
 
         /// <summary>
         /// Circle constructor

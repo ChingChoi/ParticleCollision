@@ -55,6 +55,8 @@ namespace ParticleCollision
         private int curY;
         private int curXX;
         private int curYY;
+        private float hForce;
+        private float vForce;
         /// <summary>
         /// Object variables
         /// </summary>
@@ -68,7 +70,8 @@ namespace ParticleCollision
         {
             this.themeBackgroundColor = Color.FromArgb(175, 0, 0, 0);
             this.themeBackgroundColorTwo = Color.FromArgb(100, 0, 0, 0);
-            this.themeColor = Color.FromArgb(200, 144, 238, 144);
+            this.themeColor = Color.Cyan;
+  //          this.themeColor = Color.FromArgb(200, 144, 238, 144);
             this.circles = new List<MCircle>();
             DoubleBuffered = true;
 
@@ -420,7 +423,9 @@ namespace ParticleCollision
             {
                 int cX = e.X;
                 int cY = e.Y;
-                curCircle = new MCircle(100, new Point(cX, cY));
+                Random random = new Random();
+                int diameter = (int)(100 * random.NextDouble()) + 50;
+                curCircle = new MCircle(diameter, new Point(cX, cY));
                 circles.Add(curCircle);
                 curX = cX;
                 curY = cY;
@@ -445,6 +450,9 @@ namespace ParticleCollision
                 {
                     g.DrawLine(Pens.Red, new Point(curX, curY), new Point(e.X, e.Y));
                 }
+                hForce = (curX - curXX) * 20;
+                vForce = (curY - curYY) * 20;
+
             }
         }
 
@@ -459,6 +467,9 @@ namespace ParticleCollision
             curCircle.Locked = false;
             curX = -1;
             curY = -1;
+            circles.Last().V = new Velocity(hForce, vForce);
+            hForce = 0;
+            vForce = 0;
         }
 
         /// <summary>
@@ -477,33 +488,32 @@ namespace ParticleCollision
                     {
                         if (!c.Locked)
                         {
-                            Vector a = new Vector(0, Physics.GRAVITY);
-                            Point tempDestination = Physics.DestinationPosition(c.V, a, INTERVAL, c.P);
+                            Point tempDestination = Physics.DestinationPosition(c.V, c.a, INTERVAL, c.P);
                             Vector collisionVector = Physics.BoundaryCollision(tempDestination, c.Diameter / 2,
                                 pictureBoxMain.Width, pictureBoxMain.Height);
                             if (collisionVector.X == 0 && collisionVector.Y == 0)
                             {
                                 c.P = new Point(tempDestination.X, tempDestination.Y);
-                                c.V = Physics.CalcVelocity(c.V, a, INTERVAL);
+                                c.V = Physics.CalcVelocity(c.V, c.a, INTERVAL);
                             }
                             else
                             {
                                 double timeElapsed = 0;
                                 if (collisionVector.X != 0)
                                 {
-                                    timeElapsed = Physics.TimeElapsed(c.V.X, a.X, (int)collisionVector.X);
-                                    c.P = Physics.DestinationPosition(c.V, a, timeElapsed, c.P);
-                                    c.V = Physics.CalcVelocity(c.V, a, timeElapsed);
+                                    timeElapsed = Physics.TimeElapsed(c.V.X, c.a.X, (int)collisionVector.X);
+                                    c.P = Physics.DestinationPosition(c.V, c.a, timeElapsed, c.P);
+                                    c.V = Physics.CalcVelocity(c.V, c.a, timeElapsed);
                                     c.V = new Velocity(-c.V.X, c.V.Y);
-                                    c.P = Physics.DestinationPosition(c.V, a, INTERVAL - timeElapsed, c.P);
+                                    c.P = Physics.DestinationPosition(c.V, c.a, INTERVAL - timeElapsed, c.P);
                                 }
                                 else
                                 {
-                                    timeElapsed = Physics.TimeElapsed(c.V.Y, a.Y, (int)collisionVector.Y);
-                                    c.P = Physics.DestinationPosition(c.V, a, timeElapsed, c.P);
-                                    c.V = Physics.CalcVelocity(c.V, a, timeElapsed);
+                                    timeElapsed = Physics.TimeElapsed(c.V.Y, c.a.Y, (int)collisionVector.Y);
+                                    c.P = Physics.DestinationPosition(c.V, c.a, timeElapsed, c.P);
+                                    c.V = Physics.CalcVelocity(c.V, c.a, timeElapsed);
                                     c.V = new Velocity(c.V.X, -c.V.Y);
-                                    c.P = Physics.DestinationPosition(c.V, a, INTERVAL - timeElapsed, c.P);
+                                    c.P = Physics.DestinationPosition(c.V, c.a, INTERVAL - timeElapsed, c.P);
                                 }
                             }
                             c.DrawCircle(g);

@@ -134,8 +134,8 @@ namespace ParticleCollision
 
         public static double TimeElapsed(double v, double a, int d)
         {
-            double t1 = -v + Math.Sqrt((v * v - (4 * 0.5 * -d)));
-            double t2 = -v - Math.Sqrt((v * v - (4 * 0.5 * -d)));
+            double t1 = (-v + Math.Sqrt((v * v - (4 * 0.5 * -d)))) / 100;
+            double t2 = (-v - Math.Sqrt((v * v - (4 * 0.5 * -d)))) / 100;
             return t1 > t2 ? t1 : t2;
         }
     }
