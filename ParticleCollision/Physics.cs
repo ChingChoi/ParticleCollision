@@ -151,7 +151,7 @@ namespace ParticleCollision
             {
                 sX = 1;
             }
-            //a.X = (GRAVITY * 100 - (P * Math.PI * radius / 100 * radius / 100 * v.X * v.X * sX * 0.5 * Cd)) / 100;
+            a.X = (100 - (P * Math.PI * radius / 100 * radius / 100 * v.X * v.X * sX * 0.5 * Cd)) / 100;
             a.Y = (GRAVITY * 100 - (P * Math.PI * radius/100 * radius/100 * v.Y *v.Y *sY*0.5 * Cd)) / 100;
             return a;
         }

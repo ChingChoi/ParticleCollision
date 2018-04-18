@@ -45,7 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Circles.cs" />
+    <Compile Include="MCircle.cs" />
     <Compile Include="ParticleCollision.cs">
       <SubType>Form</SubType>
     </Compile>
