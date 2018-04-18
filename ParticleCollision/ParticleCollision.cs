@@ -49,7 +49,7 @@ namespace ParticleCollision
         /// </summary>
         private Graphics G;
         private Timer drawingTimer;
-        public const int INTERVAL = 33;
+        public const int INTERVAL = 20;
         private bool isDragging;
         private int curX;
         private int curY;
@@ -488,33 +488,12 @@ namespace ParticleCollision
                     {
                         if (!c.Locked)
                         {
-                            Point tempDestination = Physics.DestinationPosition(c.V, c.a, INTERVAL, c.P);
-                            Vector collisionVector = Physics.BoundaryCollision(tempDestination, c.Diameter / 2,
-                                pictureBoxMain.Width, pictureBoxMain.Height);
-                            if (collisionVector.X == 0 && collisionVector.Y == 0)
+                            double timeElapsed = -1;
+                            int count = 0;
+                            while(timeElapsed != 0 && count < 3)
                             {
-                                c.P = new Point(tempDestination.X, tempDestination.Y);
-                                c.V = Physics.CalcVelocity(c.V, c.a, INTERVAL);
-                            }
-                            else
-                            {
-                                double timeElapsed = 0;
-                                if (collisionVector.X != 0)
-                                {
-                                    timeElapsed = Physics.TimeElapsed(c.V.X, c.a.X, (int)collisionVector.X);
-                                    c.P = Physics.DestinationPosition(c.V, c.a, timeElapsed, c.P);
-                                    c.V = Physics.CalcVelocity(c.V, c.a, timeElapsed);
-                                    c.V = new Velocity(-c.V.X, c.V.Y);
-                                    c.P = Physics.DestinationPosition(c.V, c.a, INTERVAL - timeElapsed, c.P);
-                                }
-                                else
-                                {
-                                    timeElapsed = Physics.TimeElapsed(c.V.Y, c.a.Y, (int)collisionVector.Y);
-                                    c.P = Physics.DestinationPosition(c.V, c.a, timeElapsed, c.P);
-                                    c.V = Physics.CalcVelocity(c.V, c.a, timeElapsed);
-                                    c.V = new Velocity(c.V.X, -c.V.Y);
-                                    c.P = Physics.DestinationPosition(c.V, c.a, INTERVAL - timeElapsed, c.P);
-                                }
+                                timeElapsed = MotionCalc(c);
+                                count++;
                             }
                             c.DrawCircle(g);
                         }
@@ -528,6 +507,48 @@ namespace ParticleCollision
                         }
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Support method for calculating motion of circles
+        /// </summary>
+        /// <param name="c">Circle object</param>
+        /// <returns>Time elapsed, if 0 means no collision</returns>
+        private double MotionCalc(MCircle c)
+        {
+            double timeElapsed = 0;
+            Point tempDestination = Physics.DestinationPosition(c.V, c.a, INTERVAL, c.P);
+            Vector collisionVector = Physics.BoundaryCollision(tempDestination, c.Diameter / 2,
+                pictureBoxMain.Width, pictureBoxMain.Height);
+            if (collisionVector.X == 0 && collisionVector.Y == 0)
+            {
+                c.P = new Point(tempDestination.X, tempDestination.Y);
+                c.V = Physics.CalcVelocity(c.V, c.a, INTERVAL);
+                c.a = Physics.CalcAcceleration(c.V, 100, c.Diameter / 2);
+                return timeElapsed;
+            }
+            else
+            {
+                if (collisionVector.X != 0)
+                {
+                    timeElapsed = Physics.TimeElapsed(c.V.X, c.a.X, (int)collisionVector.X);
+                    c.P = Physics.DestinationPosition(c.V, c.a, timeElapsed, c.P);
+                    c.V = Physics.CalcVelocity(c.V, c.a, timeElapsed);
+                    c.V = new Velocity(-c.V.X, c.V.Y);
+                    c.a = Physics.CalcAcceleration(c.V, 100, c.Diameter / 2);
+                    c.P = Physics.DestinationPosition(c.V, c.a, INTERVAL - timeElapsed, c.P);
+                }
+                else
+                {
+                    timeElapsed = Physics.TimeElapsed(c.V.Y, c.a.Y, (int)collisionVector.Y);
+                    c.P = Physics.DestinationPosition(c.V, c.a, timeElapsed, c.P);
+                    c.V = Physics.CalcVelocity(c.V, c.a, timeElapsed);
+                    c.V = new Velocity(c.V.X, -c.V.Y);
+                    c.a = Physics.CalcAcceleration(c.V, 100, c.Diameter / 2);
+                    c.P = Physics.DestinationPosition(c.V, c.a, INTERVAL - timeElapsed, c.P);
+                }
+                return timeElapsed;
             }
         }
     }

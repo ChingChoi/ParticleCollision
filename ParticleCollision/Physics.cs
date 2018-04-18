@@ -48,6 +48,16 @@ namespace ParticleCollision
         public const double GRAVITY = 980;
 
         /// <summary>
+        /// Air density
+        /// </summary>
+        public static double P = 9;//1.225; //air = 1.225, //water = 9, //no resistance = 9
+
+        /// <summary>
+        /// Drag coefficient for a sphere
+        /// </summary>
+        public const double Cd = 0.47;
+
+        /// <summary>
         /// Return the destination point calculated using current position,
         /// current velocity, current acceleration, and delta time
         /// </summary>
@@ -120,6 +130,32 @@ namespace ParticleCollision
             return newV;
         }
 
+        public static Vector CalcAcceleration(Velocity v, double m, double radius)
+        {
+            Vector a = new Vector(0, 0);
+            int sY;
+            int sX;
+            if (v.Y < 0)
+            {
+                sY = -1;
+            }
+            else
+            {
+                sY = 1;
+            }
+            if (v.X < 0)
+            {
+                sX = -1;
+            }
+            else
+            {
+                sX = 1;
+            }
+            //a.X = (GRAVITY * 100 - (P * Math.PI * radius / 100 * radius / 100 * v.X * v.X * sX * 0.5 * Cd)) / 100;
+            a.Y = (GRAVITY * 100 - (P * Math.PI * radius/100 * radius/100 * v.Y *v.Y *sY*0.5 * Cd)) / 100;
+            return a;
+        }
+
         /// <summary>
         /// Return the distance traveled based on velocity, acceleration, and time
         /// </summary>
@@ -132,6 +168,13 @@ namespace ParticleCollision
             return v * t / 1000 + 0.5f * a * t / 1000 * t / 1000;
         }
 
+        /// <summary>
+        /// Determine how much time elapsed to the point of collision
+        /// </summary>
+        /// <param name="v">velocity</param>
+        /// <param name="a">acceleration</param>
+        /// <param name="d">distance traveled</param>
+        /// <returns></returns>
         public static double TimeElapsed(double v, double a, int d)
         {
             double t1 = (-v + Math.Sqrt((v * v - (4 * 0.5 * -d)))) / 100;

@@ -15,7 +15,7 @@ namespace ParticleCollision
         private SolidBrush brush;
         private Velocity v;
         private bool locked;
-        public Vector a = new Vector(0, Physics.GRAVITY);
+        public Vector a;
 
         /// <summary>
         /// Circle constructor
@@ -31,6 +31,7 @@ namespace ParticleCollision
             brush = new SolidBrush(Color.Cyan);
             v = new Velocity(0, 0);
             Locked = true;
+            a = new Vector(0, Physics.GRAVITY);
         }
 
         /// <summary>
