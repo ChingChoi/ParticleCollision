@@ -102,6 +102,7 @@ namespace ParticleCollision
             pictureBoxMain.MouseDown += new MouseEventHandler(pictureBoxMain_MouseDown);
             pictureBoxMain.MouseMove += new MouseEventHandler(pictureBoxMain_MouseMove);
             pictureBoxMain.MouseUp += new MouseEventHandler(pictureBoxMain_MouseUp);
+//            pictureBoxMain.Image = Properties.Resources.deepSeaTwo;
             // 
             // panel1
             // 
